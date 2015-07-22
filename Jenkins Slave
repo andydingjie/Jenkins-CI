@@ -15,3 +15,46 @@ http://www.cnblogs.com/itech/archive/2011/11/10/2244690.html
 
 分布式构建
 https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds
+
+
+
+
+
+jenkins Master在windows的安装
+
+下载jenkins.war (https://jenkins-ci.org/  Java Web Archive (.war)), 拷贝到c:\jenkins下，然后运行java -jar jenkins.war. 
+(注意需要先安装JDK，然后设置JAVA_HOME环境变量且将%JAVA_HOME%\bin加入到PATH环境变量中)
+运行如下：
+
+c:\jenkins>java -jar jenkins.war
+Running from: C:\jenkins\jenkins.war
+webroot: $user.home/.jenkins
+[Winstone 2011/11/02 17:11:27] - Beginning extraction from war file
+Jenkins home directory: C:\Users\AAA\.jenkins found at: $user.home/.jenkins
+[Winstone 2011/11/02 17:12:57] - HTTP Listener started: port=8080
+[Winstone 2011/11/02 17:12:57] - AJP13 Listener started: port=8009
+[Winstone 2011/11/02 17:12:58] - Winstone Servlet Engine v0.9.10 running: controlPort=disabled
+Nov 02, 2011 5:12:58 PM jenkins.model.Jenkins$6 onAttained
+INFO: Started initialization
+Nov 02, 2011 5:13:02 PM jenkins.model.Jenkins$6 onAttained
+INFO: Listed all plugins
+Nov 02, 2011 5:13:02 PM jenkins.model.Jenkins$6 onAttained
+INFO: Prepared all plugins
+Nov 02, 2011 5:13:02 PM jenkins.model.Jenkins$6 onAttained
+INFO: Started all plugins
+Nov 02, 2011 5:13:02 PM jenkins.model.Jenkins$6 onAttained
+INFO: Augmented all extensions
+Nov 02, 2011 5:13:02 PM jenkins.model.Jenkins$6 onAttained
+INFO: Loaded all jobs
+Nov 02, 2011 5:13:04 PM jenkins.model.Jenkins$6 onAttained
+INFO: Completed initialization
+Nov 02, 2011 5:13:04 PM hudson.TcpSlaveAgentListener <init>
+INFO: JNLP slave agent listener started on TCP port 37157
+Nov 02, 2011 5:13:14 PM hudson.WebAppMain$2 run
+INFO: Jenkins is fully up and running
+
+ 
+
+ 
+
+访问http://localhost:8080 , jenkins的主界面如下：
