@@ -1,4 +1,17 @@
 # Jenkins-CI
 Jenkins CI
 
+分布式构建
+https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds
+http://community.jboss.org/wiki/HudsonWindowsSlavesSetup
+
+Jenkins的Windows Slave的配置
 http://www.cnblogs.com/itech/archive/2011/11/09/2243025.html
+参考
+https://wiki.jenkins-ci.org/display/JENKINS/Step+by+step+guide+to+set+up+master+and+slave+machines
+
+Jenkins的Linux的Slave的配置
+http://www.cnblogs.com/itech/archive/2011/11/10/2244690.html
+
+分布式构建
+https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds
