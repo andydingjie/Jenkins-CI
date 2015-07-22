@@ -1,0 +1,62 @@
+# Jenkins-CI
+Jenkins CI
+一 Jenkins Master/Slave架构
+
+ 
+
+Master/Slave相当于Server和agent的概念。Master提供web接口让用户来管理job和slave，job可以运行在master本机或者被分配到slave上运行。一个master可以关联多个slave用来为不同的job或相同的job的不同配置来服务。
+
+ 
+
+当job被分配到slave上运行的时候，此时master和slave其实是建立的双向字节流的连接，其中连接方法主要有如下几种：
+
+1）master通过ssh来启动slave
+
+Jenkins内置有ssh客户端实现，可以用来与远程的sshd通信，从而启动slave agent。这是对*unix系统的slave最方便的方法，因为*unix系统一般默认安装有sshd。在创建ssh连接的slave的时候，你需要提供slave的host名字，用户名和ssh证书。创建public/private keys，然后将public key拷贝到slave的~/.ssh/authorized_keys中，将private key 保存到master上某ppk文件中。jenkins将会自动地完成其他的配置工作，例如copy slave agent的binary，启动和停止slave。但是你的job运行所依赖其他的项目需要你自己设置。
+
+ 
+
+2）master通过WMI+DCOM来启动windows slave
+
+对于Windows的Slave，Jenkins可以使用Windows2000及以后内置的远程管理功能（WMI+DCOM），你只需要提供对slave有管理员访问权限的用户名和密码，jenkins将远程地创建windows service然后远程地启动和停止他们。
+
+对于windows的系统，这是最方便的方法，但是此方法不允许运行有显示交互的GUI程序。
+
+注意：不想其他类型的链接方式，此种方式slave（note）的名字非常重要，将被用来当做slave的地址访问slave。
+
+ 
+
+3）实现自己的脚本来启动slave
+
+如果上面成套的方法不够灵活，你可以实现自己的脚本来启动slave。你需要将启动脚本放到master，然后告诉jenkins master在需要的时候调用此脚本来启动slave。
+
+典型地，你的脚本使用远程程序执行机制，例如SSH，RSH，或类似的方法（在windows，可以通过cygwin或psexec来完成），
+
+在脚本的最后需要执行类似java -jar slave.jar来启动slave。slave.jar可以从http://yourjenkinsserver:port/jnlpjars/slave.jar下载，也可以在脚本的开始先下载此slave.jar从而保证slave.jar正确的版本。 但是如果使用ssh slave plugin的话，此plugin将自动地更新slave.jar。
+
+ 
+
+4）通过Java web start来启动slave
+
+jave web start（jnlp）是另一种启动slave的方法。用这种方法你需要登录到slave，打开浏览器，打开slave的配置页面来连接。还可以安装为windows service来使得slave在后台运行。
+
+如果你需要运行的程序需要UI的交互，使用下面的方法：在slave系统上创建jenkins用户，设置自动登录，在系统的startup items增加slave JNLP文件的快捷方式，使得slave在系统登录的时候自动启动。
+
+ 
+
+5）直接启动slave
+
+此方式类似于java web start，可以方便地在*unix系统上将slave运行为daemon。需要配置slave为JNLP类型连接，然后在slave机器上执行
+
+java -jar slave.jar -jnlpUrl http://yourserver:port/computer/slave-name/slave-agent.jnlp
+
+二 Slave配置的好的建议
+* 每个slave都有用户jenkins，所有的机器使用相同的UID和GID，使得slave的管理更加简单；
+* 每个机器上jenkins用户的home目录都相同/home/jenkins, 拥有相同的目录结构使得维护简单；
+* 所有的slave运行sshd，windows运行cygwin sshd；
+* 所有的slave安装ntp client，用来与相同的ntp server同步；
+* 使用脚本sh来自动地配置slave的环境，例如创建jenkins用户，安装sshd，安装java，ant，maven等；
+* 使用脚本来启动slave，保证slave总是运行在相同的参数下：
+#!/bin/bash JAVA_HOME=/opt/SUN/jdk1.6.0_04 PATH=$PATH:$JAVA_HOME/bin export PATH java -jar /var/jenkins/bin/slave.jar
+ 
+完！
