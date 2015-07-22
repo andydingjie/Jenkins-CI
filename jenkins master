@@ -1,0 +1,47 @@
+# Jenkins-CI
+Jenkins CI
+在centos中安装jenkins master测试环境
+
+在centos中安装jenkins
+ 
+1）安装目录
+pwd (/home/AAA)
+ 
+2）检查java是否安装
+[AAA@Centos_AAA jenkins]$ java -version 
+java version "1.6.0_22"
+OpenJDK Runtime Environment (IcedTea6 1.10.4) (rhel-1.41.1.10.4.el6-x86_64)
+OpenJDK 64-Bit Server VM (build 20.0-b11, mixed mode)
+
+
+
+3）下载jenkins
+mkdir -p jenkins/jenkins_home
+mkdir -p jenkins/jenkins_node
+cd jenkins
+wget http://mirrors.jenkins-ci.org/war/latest/jenkins.war
+ 
+4）启动jenkins
+start_jenkins.sh
+#!/bin/bash
+JENKINS_ROOT=/home/AAA/jenkins
+export JENKINS_HOME=$JENKINS_ROOT/jenkins_home
+java -jar $JENKINS_ROOT/jenkins.war --httpPort=8000
+ 
+chmod a+x start_jenkins.sh
+ 
+nohup ./start_jenkins.sh > jenkins.log 2>&1 &
+ 
+5）访问jenkins：
+在浏览器中输入http://192.168.0.120:8000
+ 
+6）配置jenkins：
+configure golbal security->enable security
+jenkins own user database + enable users to sign up + anyone can do anythings
+ 
+then signup one user(jenkins_aaa：0) and login
+ 
+7）安装jenkins plugins：
+一开始在可选插件下面没有任何的插件可以安装，后来查了好多资料才发现在安装插件的页面的高级tab的右下角有个坑爹的按钮（立即获取）要点下。
+ 
+完！
