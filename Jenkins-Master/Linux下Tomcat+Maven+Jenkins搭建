@@ -1,0 +1,130 @@
+
+安装JDK
+1.下载jdk，jdk-7u25-linux-i586.tar.gz；
+2.将其放在/usr/local/src(这个文件夹我用来专门放下载的文件)
+3. [root@tester src]# tar -zxvf jdk-7u25-linux-i586.tar.gz   解压jdk包
+4.将解压缩的文件移动到/usr/java文件中（java如果没有，可以新建一个文件夹）
+[root@tester local]# mv jdk1.7.0_25 /usr/java/
+5.配置环境变量
+[root@tester lib]# vim /etc/profile
+在文件的结尾增加
+export JAVA_HOME=/usr/java/jdk1.7.0_25 
+export JAVA_BIN=/usr/java/jdk1.7.0_25/bin
+export PATH=$PATH:$JAVA_HOME/bin
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export PATH=$JAVA_HOME/bin:$PATH
+如果不起作用，可以配置：
+[root@tester~]# gedit ~/.bashrc
+在文件的结尾输入
+export JAVA_HOME=/usr/java/jdk1.7.0_25
+export JAVA_BIN=/usr/java/jdk1.7.0_25/bin
+export PATH=$PATH:$JAVA_HOME/bin
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export PATH=$JAVA_HOME/bin:$PATH
+保存退出，为其起作用，运行
+[root@tester~]# source ~/.bashrc
+6.退出保存
+7.然后再打开新的终端，输入
+[root@tester~]# java -version
+显示结果：
+java version "1.7.0_25"
+Java(TM) SE Runtime Environment (build 1.7.0_25-b15)
+Java HotSpot(TM) Client VM (build 23.25-b01, mixed mode)
+这表示java命令已经可以运行了
+安装tomcat
+下载地址：http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.29/bin/
+1.解压 apache-tomcat-7.0.29.tar.gz
+tar -zxvf apache-tomcat-7.0.29.tar.gz
+2.配置 Tomcat
+复制解压后的文件到 /opt 目录
+mv  apache-tomcat-7.0.29 /opt
+进入 /opt/apache-tomcat-7.0.29 目录
+cd /opt/apache-tomcat-7.0.29
+3.打开启动的脚本文件
+sudo vi ./bin/startup.sh
+添加jdk和jre环境变量：
+JAVA_HOME=/usr/java/jdk1.7.0_25
+JRE_HOME=/usr/java/jdk1.7.0_25/jre 
+PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME:$PATH 
+CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+TOMCAT_HOME=/opt/apache-tomcat-7.0.29
+ 
+4.启动tomcat
+进入cd /opt/apache-tomcat-7.0.29/bin
+然后执行[root@tester bin]# ./startup.sh，显示启动信息
+ 
+Using CATALINA_BASE:   /opt/apache-tomcat-7.0.29
+Using CATALINA_HOME:   /opt/apache-tomcat-7.0.29
+Using CATALINA_TMPDIR: /opt/apache-tomcat-7.0.29/temp
+Using JRE_HOME:        /usr
+UsingCLASSPATH:       /opt/apache-tomcat-7.0.29/bin/bootstrap.jar:/opt/apache-tomcat-7.0.29/bin/tomcat-juli.jar
+ 
+4.验证是否配置成功
+打开浏览器http://localhost:9090（端口可以更改opt/apache-tomcat-7.0.29/conf/server.xml中 Connector prot=“8080”）
+搭建Maven
+1.解压
+[root@tester src]# tar -zxvf apache-maven-3.0.5-bin.tar.gz     
+（例如安装目录为：/opt/apache-maven-3.0.5）
+2.设置环境变量
+export MAVEN_HOME=/opt/apache-maven-3.0.5
+export PATH=$PATH:$MAVEN_HOME/bin
+3.使环境变量生效
+[root@tester apache-maven-3.0.5]# source /etc/profile
+4.验证，在命令行中输入
+[root@tester apache-maven-3.0.5]# mvn -v
+Apache Maven 3.0.5 (r01de14724cdef164cd33c7c8c2fe155faf9602da; 2013-02-19 21:51:28+0800)
+Maven home: /opt/apache-maven-3.0.5
+Java version: 1.7.0_25, vendor: Oracle Corporation
+Java home: /usr/java/jdk1.7.0_25/jre
+Default locale: zh_CN, platform encoding: UTF-8
+OS name: "linux", version: "2.6.18-164.el5", arch: "i386", family: "unix"
+ 
+5.出现上面的信息，表示maven安装成功
+ 
+安装jenkins
+1. 拷贝下载的 jenkins.war （下载地址：http://mirrors.jenkins-ci.org/war/latest/）到 tomcat的webapps目录下，即
+/opt/apache-tomcat-7.0.29/webapps
+ 
+执行命令：
+在/usr/local/src中执行
+[root@tester src]# mv jenkins.war /opt/apache-tomcat-7.0.29/webapps/jenkins（jenkins目录需要新建mkdir jenkins）
+2.配置环境变量
+[root@tester webapps]# vim /etc/profile
+export JENKINS_HOME=/opt/apache-tomcat-7.0.29/webapps/jenkins
+3.保存退出，执行
+[root@tester apache-maven-3.0.5]# source /etc/profile
+使设置生效
+4.然后进入到jenkins目录下，
+cd /opt/apache-tomcat-7.0.29/webapps/jenkins
+执行解压缩jenkins.war包
+[root@tester jenkins]# jar -xvf jenkins.war
+ 
+5.解压成功后，启动tomcat
+[root@tester jenkins]# ../../bin/catalina.sh run
+ 
+6.查看启动日志，没有错误则启动成功，然后访问
+http://localhost:9090/jenkins/，即进入jenkins页面
+
+ 
+7.安装成功以后，perforce插件是不存在，需要安装，安装方法有两种
+一种：
+Jenkins--》系统管理--》管理插件--》可选插件，然后选择Perforce Plugin 点击下方的安装按钮
+ “Download now”
+二种：从网上下载Perforce Plugin（perforce.hpi）下载地址是：
+http://mirrors.jenkins-ci.org/plugins/perforce/latest/
+将下载的perforce.hpi放到jenkins/plugins目录下，然后重启tomcat即可
+安装P4客户端
+p4下载地址：http://www.perforce.com/downloads/perforce/r11.1/bin.linux26x86_64/p4
+1.将perforce的可执行文件放到linux下/usr/local/bin下，然后赋予其执行权限
+chmod +x p4
+2.设置环境变量
+vim /etc/profile
+ 
+export P4PORT=xxx.xxx.x.xx:port  #P4服务器所在的地址
+export P5CLIEN=hostname        #当前p4客户端所在的linux的hostname
+export P4USER=username              #P4用户名
+export P4PASSWD=password    #P4密码
+export P4CHARSET=utf8           #P4编码
+ 
+3.保存退出，然后执行  source /etc/profile 使环境变量生效
+注：要想能够执行job成功，那么必须在自己搭建的jenkins上有P4的客户端，否则不能执行p4命令
